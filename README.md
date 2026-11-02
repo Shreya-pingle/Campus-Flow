@@ -1,139 +1,216 @@
-# CampusFlow — Minimal Full-Stack Task Manager
+# CampusFlow – Productivity & Task Management Platform
 
-A small, interview-friendly implementation of the features listed in the resume: Java, Spring Boot, React, MySQL, JWT, role-based access, and five data structures.
+CampusFlow is a task management application designed to help users organize tasks, manage priorities, track deadlines, and handle task dependencies through a centralized platform.
 
-## Important project status
-This is a **minimal learning/demo implementation**, not a production-ready SaaS product. The core task CRUD, data-structure demonstrations, and simple JWT login flow are implemented. Calendar scheduling is represented by task due dates; recurrence and notifications are basic extension points, not a delivery-grade scheduler/notification service. Run and test the code before claiming it works on your machine.
+The project demonstrates full-stack development using **Java, Spring Boot, React, and MySQL**, along with the practical use of common data structures and JWT-based authentication.
 
-## Architecture
+## 🚀 Tech Stack
 
-```mermaid
-flowchart TD
-  U[User] --> UI[React UI]
-  UI -->|JSON + Bearer JWT| API[Spring Boot REST API]
-  API --> AUTH[JWT Filter + Role Check]
-  AUTH --> S[Task Service]
-  S --> DS[Five Data Structures]
-  S --> JPA[Spring Data JPA]
-  JPA --> DB[(MySQL)]
+| Layer | Technologies |
+|---|---|
+| Frontend | React.js, JavaScript, HTML, CSS |
+| Backend | Java, Spring Boot, Spring Security |
+| Database | MySQL |
+| ORM | Spring Data JPA, Hibernate |
+| Authentication | JWT (JSON Web Token) |
+| Build Tool | Maven |
+| Version Control | Git, GitHub |
+
+## ✨ Features
+
+- **Task Management:** Create, view, update, and delete tasks.
+- **Priority Management:** Organize tasks according to their priority.
+- **Deadline Tracking:** Store due dates and task status.
+- **Task Dependencies:** Represent relationships between tasks and check for circular dependencies.
+- **Autocomplete:** Search task names using prefix-based suggestions.
+- **Undo and Redo:** Demonstrate reversing and restoring recent actions.
+- **Recently Viewed Tasks:** Maintain recently accessed tasks using an LRU cache.
+- **Authentication:** Secure API access using JWT authentication.
+- **Role-Based Authorization:** Restrict administrative endpoints based on user roles.
+- **Persistent Storage:** Store task information in MySQL using JPA and Hibernate.
+
+## 🧠 Data Structures Used
+
+One of the key aspects of CampusFlow is demonstrating how data structures can solve practical application problems.
+
+| Data Structure | Application |
+|---|---|
+| Priority Queue (Min Heap) | Organizing tasks based on priority |
+| Graph | Representing task dependencies and detecting cycles |
+| Trie | Prefix-based task autocomplete |
+| Stack | Supporting Undo and Redo operations |
+| LRU Cache | Managing recently accessed tasks |
+
+## 🏗️ System Architecture
+
+The application follows a simple three-layer architecture:
+
+```text
+       React Frontend
+             |
+             | REST API Requests
+             v
+      Spring Boot Backend
+             |
+       Service Layer
+             |
+     Data Structures
+             |
+       JPA / Hibernate
+             |
+             v
+         MySQL Database
 ```
 
-## Feature-to-code map
+- **Frontend:** Provides the user interface for managing tasks.
+- **Controller Layer:** Handles HTTP requests and responses.
+- **Service Layer:** Contains application logic.
+- **Data Structures:** Demonstrates priority scheduling, dependency validation, autocomplete, undo/redo, and caching.
+- **Repository Layer:** Handles database operations through Spring Data JPA.
+- **Database:** Stores task records persistently.
 
-| Resume item | Minimal implementation |
-|---|---|
-| Spring Boot REST APIs | `TaskController`, `AuthController` |
-| React frontend | `frontend/src/App.jsx` |
-| MySQL + JPA/Hibernate | `Task` entity and `TaskRepository` |
-| Deadlines / calendar scheduling | `Task.dueDate`, shown in task list |
-| Recurring tasks | `recurrence` enum stored with task (no background recurrence engine) |
-| Dependencies | `DependencyGraph` prevents cycles; demo endpoint |
-| Priority scheduling | `TaskPriorityQueue` min-heap; demo endpoint |
-| Autocomplete | `TaskTrie` prefix lookup; demo endpoint |
-| Undo/Redo | `UndoRedoStack` with two stacks; demo endpoint |
-| Recently viewed tasks | `LruCache` with map + doubly linked list; demo endpoint |
-| JWT authentication | `/api/auth/login`, signed JWT, request filter |
-| Role-based access | `USER` and `ADMIN` role claim; admin-only endpoint |
+## 📁 Project Structure
 
-## Quick start
+```text
+CampusFlow/
+│
+├── backend/
+│   ├── src/main/java/
+│   │   └── com/campusflow/
+│   │       ├── controller/
+│   │       ├── service/
+│   │       ├── repository/
+│   │       ├── model/
+│   │       ├── security/
+│   │       └── structures/
+│   │
+│   ├── src/main/resources/
+│   │   └── application.properties
+│   └── pom.xml
+│
+├── frontend/
+│   ├── src/
+│   │   ├── App.jsx
+│   │   └── App.css
+│   ├── package.json
+│   └── vite.config.js
+│
+├── docs/
+│   └── 3-hour-plan.md
+│
+└── README.md
+```
 
-### Requirements
-- Java 17+
-- Maven 3.9+
-- Node.js 18+
-- MySQL 8+
+## ⚙️ Setup and Installation
 
-### Database
+### Prerequisites
+
+- Java 17 or later
+- Maven
+- Node.js and npm
+- MySQL
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/CampusFlow.git
+cd CampusFlow
+```
+
+### 2. Create the MySQL database
+
+Open MySQL and execute:
+
 ```sql
 CREATE DATABASE campusflow;
 ```
 
-Set environment variables (or edit `backend/src/main/resources/application.properties` for local use):
-```bash
-DB_URL=jdbc:mysql://localhost:3306/campusflow
-DB_USERNAME=root
-DB_PASSWORD=your_mysql_password
-JWT_SECRET=replace-this-with-a-long-random-secret-key-at-least-32-characters
-```
+Configure your database credentials and JWT secret using the environment variables referenced in `backend/src/main/resources/application.properties`.
 
-### Backend
+### 3. Run the Spring Boot backend
+
 ```bash
 cd backend
 mvn spring-boot:run
 ```
-Runs at `http://localhost:8080`.
 
-### Frontend
+The backend starts on:
+
+```text
+http://localhost:8080
+```
+
+### 4. Run the React frontend
+
+Open another terminal:
+
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-Runs at `http://localhost:5173`.
 
-Demo login:
-- username: `admin`
-- password: `admin123`
-- role: `ADMIN`
+Open the local URL displayed by Vite in your browser.
 
-This demo account is hard-coded for local interview demonstration only. Replace it with database-backed users and hashed passwords in a real application.
+### 5. Demo Login
 
-## API examples
-
-Login:
-```http
-POST /api/auth/login
-Content-Type: application/json
-
-{"username":"admin","password":"admin123"}
-```
-Response includes a JWT token. Send it on protected calls:
-```http
-Authorization: Bearer <token>
+```text
+Username: admin
+Password: admin123
 ```
 
-Create task:
-```http
-POST /api/tasks
-Authorization: Bearer <token>
-Content-Type: application/json
+The project currently uses a demo account for authentication.
 
-{
-  "title":"Prepare interview",
-  "priority":"HIGH",
-  "status":"TODO",
-  "dueDate":"2026-11-03",
-  "recurrence":"NONE"
-}
-```
+## 🔗 API Endpoints
 
-Useful endpoints:
-- `GET /api/tasks`
-- `POST /api/tasks`
-- `GET /api/tasks/{id}`
-- `PUT /api/tasks/{id}`
-- `DELETE /api/tasks/{id}`
-- `GET /api/demo/priority`
-- `GET /api/demo/autocomplete?prefix=co`
-- `POST /api/demo/dependencies` with `{"from":1,"to":2}`
-- `POST /api/demo/undo` with `{"action":"CREATE_TASK"}`
-- `POST /api/demo/recent` with `{"id":12,"value":"Design API"}`
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/login` | Authenticate and obtain a JWT |
+| GET | `/api/tasks` | Retrieve all tasks |
+| POST | `/api/tasks` | Create a task |
+| PUT | `/api/tasks/{id}` | Update a task |
+| DELETE | `/api/tasks/{id}` | Delete a task |
+| GET | `/api/demo/priority` | Demonstrate priority queue |
+| GET | `/api/demo/autocomplete` | Demonstrate Trie autocomplete |
+| POST | `/api/demo/dependencies` | Demonstrate dependency graph |
+| POST | `/api/demo/undo` | Demonstrate stack operations |
+| POST | `/api/demo/recent` | Demonstrate LRU cache |
+| GET | `/api/admin/ping` | Demonstrate admin-only access |
 
-`GET /api/admin/ping` requires the `ADMIN` role.
+## 🔐 Authentication and Security
 
-## Why these five data structures?
+CampusFlow demonstrates JWT-based authentication with Spring Security.
 
-1. **Priority Queue:** tasks with high priority should be considered before low-priority tasks. A binary heap makes insert/remove efficient: O(log n), peek O(1).
-2. **Graph:** tasks can depend on other tasks. A directed edge A → B means B depends on A. DFS checks whether a new edge would create a cycle: O(V + E).
-3. **Trie:** prefix search is useful for task-title autocomplete. Insert/search takes O(L), where L is title/prefix length.
-4. **Two Stacks:** undo and redo are naturally LIFO. Push/pop is O(1).
-5. **LRU Cache:** recently opened tasks are likely to be opened again. HashMap + doubly linked list gives O(1) average get/put.
+1. The user submits login credentials.
+2. The backend validates the demo credentials.
+3. A JWT containing the username and role is generated.
+4. The frontend stores the token and sends it with protected API requests.
+5. Spring Security validates the token and checks the required role.
 
-## Security note
-This is a compact demonstration: one hard-coded demo user, a shared JWT secret from configuration, and simple role claims. For production, use database-backed users, BCrypt password hashing, strong secret management, token expiry/refresh strategy, HTTPS, ownership checks, validation, and tests.
+**Note:** This repository contains a simplified demonstration of authentication and authorization. It is not a production-ready user management system.
 
-## Interview explanation
-“CampusFlow is a task manager built with React and Spring Boot. The frontend calls REST endpoints. Spring Boot handles validation and business logic, JPA stores tasks in MySQL, and JWT protects API calls. I used a priority queue for task ordering, a graph for dependencies and cycle detection, a trie for autocomplete, two stacks for undo/redo, and an LRU cache for recently viewed tasks. I kept the implementation small so each data structure has a clear responsibility.”
+## 🔮 Future Enhancements
 
-## 3-hour preparation plan
-See [`docs/3-hour-plan.md`](docs/3-hour-plan.md).
+- Implement automated recurring task scheduling.
+- Add real-time task notifications.
+- Build a full calendar-based scheduling interface.
+- Add productivity analytics and visual dashboards.
+- Introduce database-backed user registration and password hashing.
+- Add automated unit and integration tests.
+
+## 🎯 Learning Outcomes
+
+Through CampusFlow, the project demonstrates:
+
+- Building RESTful APIs using Spring Boot.
+- Connecting a React frontend with a Java backend.
+- Database integration using MySQL, JPA, and Hibernate.
+- Understanding JWT authentication and role-based authorization.
+- Applying fundamental data structures to practical application scenarios.
+- Organizing a full-stack project using layered architecture.
+
+
+
+---
+
+**CampusFlow – Plan smarter. Prioritize better. Get things done.**
